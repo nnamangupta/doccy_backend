@@ -49,7 +49,7 @@ class OrchestratorAgent:
     
     def _agent_builder(self):
         """Create the agent agent_builder using LangGraph."""
-        # guptanaman: at the moment this is triggering the tool but not with the right arguements.
+        # guptanaman: at the moment this is triggering the tool but not with the right arguments.
         return create_react_agent(self.llm, tools=self.tools)
         
         # agent_builder = StateGraph(CoreAgentState)

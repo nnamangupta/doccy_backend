@@ -19,7 +19,8 @@ class AzureStorageService:
         Returns:
             BlobClient for the uploaded blob
         """
-        container_client = DataStoreManager.get_container_client(container_name)
+        manager = DataStoreManager.get_instance()
+        container_client = manager.get_container_client(container_name)
         blob_client = container_client.get_blob_client(blob_name)
         
         with open(file_path, "rb") as data:
@@ -40,7 +41,8 @@ class AzureStorageService:
         Returns:
             BlobClient for the uploaded blob
         """
-        container_client = DataStoreManager.get_container_client(container_name)
+        manager = DataStoreManager.get_instance()
+        container_client = manager.get_container_client(container_name)
         blob_client = container_client.get_blob_client(blob_name)
         
         blob_client.upload_blob(data, overwrite=True)
@@ -58,7 +60,8 @@ class AzureStorageService:
         Returns:
             The blob content as bytes
         """
-        container_client = DataStoreManager.get_container_client(container_name)
+        manager = DataStoreManager.get_instance()
+        container_client = manager.get_container_client(container_name)
         blob_client = container_client.get_blob_client(blob_name)
         
         return blob_client.download_blob().readall()
@@ -75,7 +78,8 @@ class AzureStorageService:
         Returns:
             Generator yielding blob items
         """
-        container_client = DataStoreManager.get_container_client(container_name)
+        manager = DataStoreManager.get_instance()
+        container_client = manager.get_container_client(container_name)
         return container_client.list_blobs(name_starts_with=name_starts_with)
     
     @staticmethod
@@ -87,7 +91,8 @@ class AzureStorageService:
             container_name: Name of the container
             blob_name: Name of the blob to delete
         """
-        container_client = DataStoreManager.get_container_client(container_name)
+        manager = DataStoreManager.get_instance()
+        container_client = manager.get_container_client(container_name)
         blob_client = container_client.get_blob_client(blob_name)
         
         blob_client.delete_blob()

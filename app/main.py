@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from app.core.CoreAgent import OrchestratorAgent
 from app.services.LoggerService import LoggerService
 from app.services.RouterService import RouterService
+from app.services.DataStoreManager import DataStoreManager
 
 # Configure logging
 LoggerService.configure_logger()
@@ -19,6 +20,7 @@ async def lifespan(app: FastAPI):
     global agent
     logger.info("Initializing OrchestratorAgent...")
     try:
+        DataStoreManager.initialize()  # Initialize the DataStoreManager with the connection string from environment variables
         agent = OrchestratorAgent.get_instance()
         logger.info("OrchestratorAgent initialized successfully")
     except Exception as e:

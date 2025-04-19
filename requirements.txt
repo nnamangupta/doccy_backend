@@ -6,3 +6,4 @@ langchain
 langchain-core
 langchain-openai
 azure-storage-blob
+langgraph == 0.3.2

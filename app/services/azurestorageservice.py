@@ -1,35 +1,13 @@
 import os
 from typing import Optional, BinaryIO
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+from app.services.DataStoreManager import DataStoreManager
 
 class AzureStorageService:
     """Service for interacting with Azure Blob Storage."""
     
-    def __init__(self, connection_string: str):
-        """
-        Initialize the Azure Storage service.
-        
-        Args:
-            connection_string: Azure Storage connection string
-        """
-        self.blob_service_client = BlobServiceClient.from_connection_string(connection_string)
-    
-    def create_container(self, container_name: str) -> ContainerClient:
-        """
-        Create a new container if it doesn't exist.
-        
-        Args:
-            container_name: Name of the container to create
-            
-        Returns:
-            ContainerClient for the created/existing container
-        """
-        container_client = self.blob_service_client.get_container_client(container_name)
-        if not container_client.exists():
-            container_client.create_container()
-        return container_client
-    
-    def upload_file(self, container_name: str, blob_name: str, file_path: str) -> BlobClient:
+    @staticmethod
+    def upload_file(container_name: str, blob_name: str, file_path: str) -> BlobClient:
         """
         Upload a file to an Azure Storage container.
         
@@ -41,17 +19,17 @@ class AzureStorageService:
         Returns:
             BlobClient for the uploaded blob
         """
-        blob_client = self.blob_service_client.get_blob_client(
-            container=container_name, 
-            blob=blob_name
-        )
+        manager = DataStoreManager.get_instance()
+        container_client = manager.get_container_client(container_name)
+        blob_client = container_client.get_blob_client(blob_name)
         
         with open(file_path, "rb") as data:
             blob_client.upload_blob(data, overwrite=True)
             
         return blob_client
     
-    def upload_data(self, container_name: str, blob_name: str, data: BinaryIO) -> BlobClient:
+    @staticmethod
+    def upload_data(container_name: str, blob_name: str, data: BinaryIO) -> BlobClient:
         """
         Upload binary data to an Azure Storage container.
         
@@ -63,15 +41,15 @@ class AzureStorageService:
         Returns:
             BlobClient for the uploaded blob
         """
-        blob_client = self.blob_service_client.get_blob_client(
-            container=container_name, 
-            blob=blob_name
-        )
+        manager = DataStoreManager.get_instance()
+        container_client = manager.get_container_client(container_name)
+        blob_client = container_client.get_blob_client(blob_name)
         
         blob_client.upload_blob(data, overwrite=True)
         return blob_client
     
-    def download_data(self, container_name: str, blob_name: str) -> bytes:
+    @staticmethod
+    def download_data(container_name: str, blob_name: str) -> bytes:
         """
         Download a blob as binary data.
         
@@ -82,14 +60,14 @@ class AzureStorageService:
         Returns:
             The blob content as bytes
         """
-        blob_client = self.blob_service_client.get_blob_client(
-            container=container_name, 
-            blob=blob_name
-        )
+        manager = DataStoreManager.get_instance()
+        container_client = manager.get_container_client(container_name)
+        blob_client = container_client.get_blob_client(blob_name)
         
         return blob_client.download_blob().readall()
     
-    def list_blobs(self, container_name: str, name_starts_with: Optional[str] = None):
+    @staticmethod
+    def list_blobs(container_name: str, name_starts_with: Optional[str] = None):
         """
         List all blobs in a container, optionally filtered by prefix.
         
@@ -100,10 +78,12 @@ class AzureStorageService:
         Returns:
             Generator yielding blob items
         """
-        container_client = self.blob_service_client.get_container_client(container_name)
+        manager = DataStoreManager.get_instance()
+        container_client = manager.get_container_client(container_name)
         return container_client.list_blobs(name_starts_with=name_starts_with)
     
-    def delete_blob(self, container_name: str, blob_name: str) -> None:
+    @staticmethod
+    def delete_blob(container_name: str, blob_name: str) -> None:
         """
         Delete a blob.
         
@@ -111,9 +91,8 @@ class AzureStorageService:
             container_name: Name of the container
             blob_name: Name of the blob to delete
         """
-        blob_client = self.blob_service_client.get_blob_client(
-            container=container_name, 
-            blob=blob_name
-        )
+        manager = DataStoreManager.get_instance()
+        container_client = manager.get_container_client(container_name)
+        blob_client = container_client.get_blob_client(blob_name)
         
         blob_client.delete_blob()

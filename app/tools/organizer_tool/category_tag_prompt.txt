@@ -1,0 +1,8 @@
+prompt = """
+Given the following list of tags and their weight and a list of existing categories, identify the single most appropriate category the tags belongs to. If the tags does not clearly fit into any of the existing categories, suggest one new category  that best describes the context of tags. Only return the category from the list if you are more than 75% sure. 
+
+tags: {text}
+
+Categories: {categories}
+"""
+

@@ -1,0 +1,8 @@
+prompt = """
+Given the following text and a list of existing categories, identify the single most appropriate category the text belongs to. If the text does not clearly fit into any of the existing categories, suggest one new category  that best describes the content. Only return the category from the list if you are more than 75% sure. 
+
+text: {text}
+
+Categories: {categories}
+"""
+

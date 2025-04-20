@@ -1,0 +1,6 @@
+prompt = """
+text: {text}
+
+Read the text carefully, correct the grammar of the text, and generate a concise list of metadata tags. The tags should be specific enough to enable accurate data retrieval later. Then, generate one word tags. If there are compound phrases, split them into separate, meaningful one word tags. Avoid vague or broad terms. Use lowercase. Return only the tags, no explanations. Limit to meaningful and short tags. Also give each tag a score that will help during placing the text in a category ranging between 0 and 1. Return a list of strings only.
+"""
+

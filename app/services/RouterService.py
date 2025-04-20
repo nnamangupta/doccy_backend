@@ -20,12 +20,14 @@ class RouterService:
         from app.api.langchain_routes import router as langchain_router
         from app.api.AgentRoutes import router as agent_router
         from app.api.CommonRoutes import router as common_router
+        from app.api.organizer_api import router as organizer_router
         
         # List of all routers to include
         routers = [
             common_router,
             langchain_router,
             agent_router,
+            organizer_router,
         ]
         
         # Register all routers

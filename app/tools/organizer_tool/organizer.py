@@ -16,8 +16,9 @@ class OrganizerTool():
         Initialize the organizer tool with Azure OpenAI credentials from environment variables.
         """
         self.llm = get_llm(0.3)
-
-    def extract_tags(self, oInput:str):
+    
+    @staticmethod 
+    def extract_tags(oInput:str):
         
         prompt_path="tools/organizer_tool/tag_prompt.txt"
         prompt_template = read_prompt_template(prompt_path)

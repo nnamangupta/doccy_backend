@@ -14,6 +14,7 @@ from IPython.display import Image, display
 from langchain_core.messages import HumanMessage
 from app.services.CommonService import read_prompt_template
 from app.core.langchain_setup import get_llm
+from app.tools.organizer_tool.organizer import OrganizerTool
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +40,12 @@ class DocumentationAgent:
         """Initialize all available tools for the agent."""
         
         return [
+            Tool(
+                name="ExtractTags",
+                description="Extracts relevant tags from research content or documentation.",
+                func=OrganizerTool.extract_tags,
+                return_direct=True,
+            )
         ]
 
     def _agent_builder(self):
@@ -59,7 +66,7 @@ class DocumentationAgent:
 
         # humanMessage = HumanMessage(content=user_message)
         # print_stream(self.agent.stream(humanMessage, stream_mode="values"))
-        raise NotImplementedError("DocumentationAgent is not implemented yet.")
+        # raise NotImplementedError("DocumentationAgent is not implemented yet.")
 
 
         result = self.agent.invoke(state)

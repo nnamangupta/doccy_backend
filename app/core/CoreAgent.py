@@ -20,7 +20,7 @@ from langgraph.types import Command
 # Load environment variables
 load_dotenv()
 
-get_members = Literal["documentAgent", "feedbackAgent", "retrievalAgent"]
+get_members = Literal["DocumentationAgent", "FeedbackAgent", "RetrievalAgent"]
 
 class Router(TypedDict):
     """Worker to route to next. If no workers needed, route to FINISH."""
@@ -100,9 +100,9 @@ class OrchestratorAgent:
         builder = StateGraph(State)
         builder.set_entry_point("coreagent")
         builder.add_node("coreagent", self.coreagent)
-        builder.add_node("documentAgent", self.documentation_agent.process_request)
-        builder.add_node("feedbackAgent", self.feedback_agent.process_request)
-        builder.add_node("retrievalAgent", self.retrieval_agent.process_request)
+        builder.add_node("DocumentationAgent", self.documentation_agent.process_request)
+        builder.add_node("FeedbackAgent", self.feedback_agent.process_request)
+        builder.add_node("RetrievalAgent", self.retrieval_agent.process_request)
         return builder.compile()
     
     def process_request(self, message: str):

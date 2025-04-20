@@ -27,7 +27,7 @@ class FeedbackAgent:
     """
     This agent is designed to collect user feedback on documents.
     """
-    
+
     def __init__(self):
         self.llm = get_llm()
         self.agent_template = read_prompt_template("agents/Feedback/FeedbackAgentPrompt.txt")
@@ -71,7 +71,7 @@ class FeedbackAgent:
         return Command(
             update={
                 "messages": [
-                    HumanMessage(content=result["messages"][-1].content, name=__name__)
+                    HumanMessage(content=result["messages"][-1].content, name="FeedbackAgent")
                 ]
             },
             goto="coreagent",

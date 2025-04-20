@@ -1,6 +1,7 @@
 import json
 from typing import Dict, List, Any
 from langchain_openai import AzureChatOpenAI
+from langchain_core.messages import HumanMessage, ToolMessage, ChatMessage, AIMessage
 import os
 
 # Import models from the models directory
@@ -34,7 +35,7 @@ class OrganizerTool():
         # Parse the JSON string into a Python list
         tags_list = json.loads(json_content)
         # Access the content property of the AIMessage object
-        return tags_list
+        return "Here are the list of tags: " + str(tags_list)
      
     
     def determine_category(self, oInput:str, categories: List[str],path):

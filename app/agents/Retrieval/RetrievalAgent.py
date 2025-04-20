@@ -27,7 +27,7 @@ class RetrievalAgent:
     """
     This agent is designed to handle data retrieval from documents.
     """
-    
+
     def __init__(self):
         self.llm = get_llm()
         self.agent_template = read_prompt_template("agents/Retrieval/RetrievalAgentPrompt.txt")
@@ -73,7 +73,7 @@ class RetrievalAgent:
         return Command(
             update={
                 "messages": [
-                    HumanMessage(content=result["messages"][-1].content, name=__name__)
+                    HumanMessage(content=result["messages"][-1].content, name="RetrievalAgent")
                 ]
             },
             goto="coreagent",

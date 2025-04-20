@@ -11,7 +11,7 @@ from langchain_core.tools import Tool
 from langgraph.prebuilt import create_react_agent
 from IPython.display import Image, display
 
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, FunctionMessage
 from app.services.CommonService import read_prompt_template
 from app.core.langchain_setup import get_llm
 from app.tools.organizer_tool.organizer import OrganizerTool
@@ -56,27 +56,13 @@ class DocumentationAgent:
     def process_request(self, state: State) -> Command[Literal["coreagent"]]:
         """Process a request from core agent and return the response."""
 
-        def print_stream(stream):
-            for s in stream:
-                message = s["messages"][-1]
-                if isinstance(message, tuple):
-                    print(message)
-                else:
-                    message.pretty_print()
-
-        # humanMessage = HumanMessage(content=user_message)
-        # print_stream(self.agent.stream(humanMessage, stream_mode="values"))
         # raise NotImplementedError("DocumentationAgent is not implemented yet.")
 
-
         result = self.agent.invoke(state)
-        print_stream(result)
-
-        # return Command(goto="coreagent", update={"messages": [result]})
         return Command(
             update={
                 "messages": [
-                    HumanMessage(content=result["messages"][-1].content, name=__name__)
+                    FunctionMessage(content=result["messages"][-1].content, name="DocumentationAgent")
                 ]
             },
             goto="coreagent",

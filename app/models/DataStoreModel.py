@@ -14,3 +14,23 @@ class DataResponse(BaseModel):
     status: str
     message: Optional[str] = None
     data: Optional[Union[Dict[str, Any], List[str]]] = None
+
+class ChunkMetadata(BaseModel):
+    """Metadata associated with document chunks"""
+    RId: str  # Resource ID
+    ChunkId: str
+    Parent_ChunkId: Optional[str]
+    Tag: str
+    Category: str
+
+class Chunk(BaseModel):
+    """Complete chunk data with content and metadata"""
+    RId: str
+    ChunkId: str
+    Next_ChunkId: Optional[str]
+    Previous_ChunkId: Optional[str]
+    Parent_ChunkId: Optional[str]
+    Context: str
+    Tag: str
+    Categories: List[str]
+    Vector_Embeddings: Optional[List[float]]

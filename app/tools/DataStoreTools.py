@@ -2,9 +2,9 @@ from typing import Dict, Any, List, Union, Type
 from langchain.tools import BaseTool
 import json
 from dotenv import load_dotenv
-from pydantic import BaseModel
 from app.services.azurestorageservice import AzureStorageService
 from app.models.DataStoreModel import DataStoreInput
+from langchain_core.tools import Tool, StructuredTool
 
 # Load environment variables
 load_dotenv()
@@ -12,7 +12,12 @@ load_dotenv()
 class DataStoreTools(BaseTool):
     """Tool for storing and retrieving data from Azure Blob Storage."""
     name: str = "data_store_tool"
-    description: str = "Store, retrieve, list, or delete data in persistent storage"
+    description: str = """Store, retrieve, list, or delete data from the data store container.
+                - Only triggered by other tools to handle data the below actions:
+                    - For 'store' action: Provide container_name, data_id, and data
+                    - For 'retrieve' action: Provide container_name and data_id
+                    - For 'list' action: Provide container_name and optional prefix
+                    - For 'delete' action: Provide container_name and data_id"""
     args_schema: Type[DataStoreInput] = DataStoreInput
     
     def __init__(self):

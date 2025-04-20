@@ -2,8 +2,8 @@ from typing import List
 import logging
 from langgraph.prebuilt import create_react_agent
 from langchain_core.tools import Tool
-
 from app.core.langchain_setup import get_llm
+from app.models.State import State
 from app.services.CommonService import read_prompt_template
 
 from typing import List
@@ -46,7 +46,7 @@ class DocumentationAgent:
         
         return create_react_agent(self.llm, tools=self._initialize_tools(), prompt=self.agent_template)
         
-    def process_request(self, user_message: str) -> Command[Literal["coreagent"]]:
+    def process_request(self, state: State) -> Command[Literal["coreagent"]]:
         """Process a request from core agent and return the response."""
 
         def print_stream(stream):
@@ -57,10 +57,12 @@ class DocumentationAgent:
                 else:
                     message.pretty_print()
 
-        humanMessage = HumanMessage(content=user_message)
+        # humanMessage = HumanMessage(content=user_message)
         # print_stream(self.agent.stream(humanMessage, stream_mode="values"))
+        raise NotImplementedError("DocumentationAgent is not implemented yet.")
 
-        result = self.agent.invoke(humanMessage)
+
+        result = self.agent.invoke(state)
         print_stream(result)
 
         # return Command(goto="coreagent", update={"messages": [result]})

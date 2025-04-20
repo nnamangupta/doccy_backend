@@ -2,6 +2,7 @@ from typing import Dict, Any, List, Union, Type
 from langchain.tools import BaseTool
 import json
 from dotenv import load_dotenv
+from pydantic import BaseModel
 from app.services.azurestorageservice import AzureStorageService
 from app.models.DataStoreModel import DataStoreInput
 
@@ -66,20 +67,19 @@ class DataStoreTools(BaseTool):
         except Exception as e:
             return {"status": "error", "message": f"Failed to delete data: {str(e)}"}
 
-    def _run(self, dataStoreInput: DataStoreInput) -> Union[Dict[str, Any], List[str], str]:
+    def _run(self, operation: str, container_name: str, data_id: str = "", data: Dict[str, Any] = None, prefix: str = "") -> Union[Dict[str, Any], List[str], str]:
         """
         Run the data store tool with the specified operation.
-        
+
         Args:
-            dataStoreInput: An instance of DataStoreInput containing:
-                - operation: Operation to perform ('store', 'retrieve', 'list', or 'delete')
-                - container_name: Name of the storage container
-                - data_id: Unique identifier for the data
-                - data: Data to store (for 'store' operation)
-                - prefix: Prefix filter (for 'list' operation)
-            
+            operation (str): The operation to perform. Must be one of 'store', 'retrieve', 'list', or 'delete'.
+            container_name (str): The name of the Azure Blob Storage container.
+            data_id (str, optional): The ID of the data for 'store', 'retrieve', or 'delete' operations. Defaults to an empty string.
+            data (str, optional): The data to store for the 'store' operation. Defaults to an empty string.
+            prefix (str, optional): The prefix to filter blobs for the 'list' operation. Defaults to an empty string.
+
         Returns:
-            Operation result (varies by operation type)
+            Union[Dict[str, Any], List[str], str]: The result of the operation, which varies based on the operation type.
         """
         operations = {
             "store": self._store_data,
@@ -88,11 +88,19 @@ class DataStoreTools(BaseTool):
             "delete": self._delete_data
         }
 
+        dataStoreInput: DataStoreInput = DataStoreInput(
+            operation=operation,
+            container_name=container_name,
+            data_id=data_id,
+            data=data,
+            prefix=prefix
+        )
+
         if dataStoreInput.operation not in operations:
             raise ValueError(f"Unknown operation: {dataStoreInput.operation}. Must be 'store', 'retrieve', 'list', or 'delete'")
 
         return operations[dataStoreInput.operation](dataStoreInput)
 
-    async def _arun(self, dataStoreInput: DataStoreInput) -> Union[Dict[str, Any], List[str], str]:
+    async def _arun(self, operation: str, container_name: str, data_id: str = "", data: Dict[str, Any] = None, prefix: str = "") -> Union[Dict[str, Any], List[str], str]:
         """Async implementation of the data store tool."""
-        return self._run(dataStoreInput)
+        return self._run(operation, container_name, data_id, data, prefix)

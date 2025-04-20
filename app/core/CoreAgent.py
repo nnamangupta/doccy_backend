@@ -1,9 +1,12 @@
+import os
 from typing import List, TypedDict
-from langchain_core.tools import Tool
+from langchain_core.tools import Tool, StructuredTool
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import create_react_agent, ToolNode
+from IPython.display import Image, display
 
 from langchain_core.messages import HumanMessage, AIMessage
+from app.services.CommonService import read_prompt_template
 from app.tools.DataStoreTools import DataStoreTools
 from app.core.langchain_setup import get_llm
 from dotenv import load_dotenv
@@ -33,24 +36,30 @@ class OrchestratorAgent:
         """Initialize the orchestrator agent."""
         self.llm = get_llm()
         self.tools = self._initialize_tools()
-        self.tool_executor = ToolNode(self.tools)
+        # self.tool_executor = ToolNode(self.tools)
+        self.corePromptTemplate = read_prompt_template("core/CoreAgentPromptTemplate.txt")
         self.agent = self._agent_builder()
     
     def _initialize_tools(self) -> List[Tool]:
         """Initialize all available tools for the agent."""
         data_store_tool = DataStoreTools()
         return [
-            Tool(
-                name="data_store_tools",
+            StructuredTool.from_function(
                 func=data_store_tool._run,
-                description="Store, retrieve, list, or delete data from the data store",
+                name="data_store_tools",
+                description="""Store, retrieve, list, or delete data from the data store.
+                - For 'store' action: Provide container_name, data_id, and data
+                - For 'retrieve' action: Provide container_name and data_id
+                - For 'list' action: Provide container_name and optional prefix
+                - For 'delete' action: Provide container_name and data_id""",
+                args_schema=data_store_tool.args_schema
             )
         ]
     
     def _agent_builder(self):
         """Create the agent agent_builder using LangGraph."""
         # guptanaman: at the moment this is triggering the tool but not with the right arguments.
-        return create_react_agent(self.llm, tools=self.tools)
+        return create_react_agent(self.llm, tools=self.tools, prompt=self.corePromptTemplate)
         
         # agent_builder = StateGraph(CoreAgentState)
         # def route_request(state):
@@ -113,9 +122,21 @@ class OrchestratorAgent:
     
     def process_request(self, user_message: str) -> str:
         """Process a user request and return the response."""
-        result = self.agent.invoke({
-            "messages": [HumanMessage(content=user_message)],
-            # "tools": self.tools,
-            # "next_step": "route_request"
-        })
-        return result["messages"][-1].content
+        
+        # Display the current state graph for debugging
+        agentChart = Image(self.agent.get_graph().draw_mermaid_png());
+        with open("app/core/agent_chart.png", "wb") as f:
+            f.write(agentChart.data)  # Save the chart as a PNG file, overriding if it exists
+        display(agentChart)
+
+        def print_stream(stream):
+            for s in stream:
+                message = s["messages"][-1]
+                if isinstance(message, tuple):
+                    print(message)
+                else:
+                    message.pretty_print()
+        humanMessage = HumanMessage(content=user_message)
+        print_stream(self.agent.stream(humanMessage, stream_mode="values"))
+        # result = self.agent.invoke(humanMessage)
+        # return result["messages"][-1].content

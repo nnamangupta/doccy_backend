@@ -14,7 +14,7 @@ def get_llm():
         azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
         api_key=os.getenv("AZURE_OPENAI_API_KEY"),
         api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
-        temperature=0.7
+        temperature=0.3
     )
 
 def create_simple_chain(prompt_template):

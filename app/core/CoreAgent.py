@@ -49,10 +49,10 @@ class OrchestratorAgent:
         self.graph = self._agent_builder()
         
         # Display the current state graph for debugging
-        agentChart = Image(self.graph.get_graph().draw_mermaid_png())
-        with open("app/core/coreagent_chart.png", "wb") as f:
-            f.write(agentChart.data)  # Save the chart as a PNG file, overriding if it exists
-        display(agentChart)
+        # agentChart = Image(self.graph.get_graph().draw_mermaid_png())
+        # with open("app/core/coreagent_chart.png", "wb") as f:
+        #     f.write(agentChart.data)  # Save the chart as a PNG file, overriding if it exists
+        # display(agentChart)
 
     def coreagent(self, state: State) -> Command[Literal[get_members, "__end__"]]:
         messages = [{"role": "system", "content": self.corePromptTemplate},] + state["messages"]

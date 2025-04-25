@@ -1,0 +1,8 @@
+prompt = """
+{nData}
+
+Given the above chunk of data, analyse and transform it consedering the following requests:
+
+{mData}
+
+"""

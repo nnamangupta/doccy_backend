@@ -1,0 +1,10 @@
+prompt = """
+Old Chunk: {oData}
+
+New Chunk: {nData}
+
+Given above the old chunks of data and a new chunk intorduced, analyse and transform the data into a new consolidated 
+chunk that encapsulates the essence of both old and new data. Consider the following requests:
+{mData}. 
+
+"""

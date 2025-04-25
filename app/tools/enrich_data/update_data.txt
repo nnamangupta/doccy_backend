@@ -1,0 +1,6 @@
+prompt = """
+Old Chunk: {oData}
+
+Given the above old chunk of data, analyse and transform the data into a new chunk that encapsulated the essence of the user requests
+The user wants to {mData}. 
+"""

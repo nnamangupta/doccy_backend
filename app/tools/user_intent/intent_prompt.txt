@@ -1,0 +1,9 @@
+prompt = """
+User has given a input for what the user desires to do with data or what data to retrieve. Read the input
+carefully and transform the input into formal and structured manner in the way you would have understood best.
+Do not give any pre text or suggestions after. Return only what is asked. Give steps and only steps nothing else.
+Do not add any step on your own.
+
+User Input: {iData}
+"""
+
